@@ -1,43 +1,34 @@
-﻿# Learnova - Base de Données Relationnelle PostgreSQL & Prisma 7
+﻿# Learnova Database
 
-Ce répertoire contient la documentation technique, les modèles conceptuels et physiques (MCD / MLD / MPD), les migrations et les spécifications d'alimentation (seeding) de la plateforme **Learnova**.
+Learnova stores its data in PostgreSQL and uses Prisma 7 as the ORM, with the `@prisma/adapter-pg` driver and a `pg` connection pool.
 
----
+The Prisma schema, migrations and seed script are in [`backend/prisma/`](../backend/prisma/).
 
-## 1. Stack Base de Données
+## Contents
 
-- **SGBD** : PostgreSQL 15+
-- **ORM** : Prisma 7.8.0 avec architecture moderne `prisma.config.ts`
-- **Adaptateur de Pilote Natif** : `@prisma/adapter-pg`
-- **Gestionnaire de Connexions** : `pg.Pool` (node-postgres)
-- **Migrations** : Prisma Migrate (`backend/prisma/migrations/`)
-- **Intégrité Référentielle** : Clés étrangères avec suppressions en cascade (`onDelete: Cascade`), index composites, contraintes d'unicité
+| Folder | Description |
+| :--- | :--- |
+| [`diagrams/`](diagrams/) | Conceptual, logical and physical data models (draw.io) |
+| [`backups/`](backups/) | Backup and restore scripts for Linux, macOS and Windows |
 
----
+## Data model highlights
 
-## 2. Structure du Répertoire
+- 18 Prisma models covering users and roles, courses, sessions, videos, enrollments, progress, quizzes, exams, certificates and gamification
+- Foreign keys with cascade deletes, composite indexes and unique constraints
+- Migrations managed with Prisma Migrate
 
-- **`diagrams/`** : Diagrammes Entité-Association (MCD / ERD) Mermaid et dictionnaire de données.
-- **`migrations/`** : Historique des migrations relationnelles appliquées.
-- **`seed/`** : Référence des scripts d'alimentation garantissant 100% de données réelles (zéro mock data).
+## Seed data
 
----
+`npx prisma db seed` creates the demo accounts and loads the catalog: 108 courses across 14 domains, 142 sessions, 568 videos with lecture notes, 142 practice quizzes and 108 final exams.
 
-## 3. Commandes Usuelles (depuis `backend/`)
+## Common commands
+
+Run these from `backend/`:
 
 ```bash
-# Valider le schéma Prisma
-npx prisma validate
-
-# Générer le client Prisma 7 typé
-npx prisma generate
-
-# Vérifier l'état de synchronisation des migrations
-npx prisma migrate status
-
-# Appliquer les migrations
-npx prisma migrate deploy
-
-# Initialiser et alimenter la base de données
-npx prisma db seed
+npx prisma validate          # Check the schema
+npx prisma generate          # Generate the typed client
+npx prisma migrate status    # Check migration state
+npx prisma migrate deploy    # Apply migrations
+npx prisma db seed           # Load seed data
 ```
